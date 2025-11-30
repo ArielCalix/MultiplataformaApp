@@ -38,7 +38,7 @@ export const Action = CreateActions<{
 }>(NAME, ["set", "clear"]);
 
 export const Reducer = CreateReducer(INIT, ({ addCase }) => {
-    addCase(Action.set, (state, { payload }) => payload);
+    addCase(Action.set, (_state, { payload }) => payload);
     addCase(Action.clear, () => {
         //TODO:  Validar esta soluccion no es la mas optima
         const rootContainer = window.document.getElementById("root");

@@ -41,8 +41,8 @@ export const Action = CreateActions<{
 }>(NAME, ["set", "toggle"]);
 
 export const Reducer = CreateReducer(INIT, ({ addCase }) => {
-    addCase(Action.set, (state, { payload }) => payload);
-    addCase(Action.toggle, (state, { payload }) => payload);
+    addCase(Action.set, (_state, { payload }) => payload);
+    addCase(Action.toggle, (_state, { payload }) => payload);
 });
 
 export const SliceFetching = { [NAME]: Reducer };
