@@ -6,6 +6,7 @@ import { SlicePersist } from "./slices/persist";
 import { SliceOnline } from "./slices/online";
 // import { SliceRouter } from "./slices/router";
 import { SliceConfiguration } from "./slices/configuration";
+import { Reducer as ReducerCharacters, NAME as NAME_CHARACTERS } from "./slices/characters";
 
 export default CombineReducers({
     ...SliceFetching,
@@ -15,4 +16,5 @@ export default CombineReducers({
     ...SliceOnline,
     // ...SliceRouter,
     ...SliceConfiguration,
+    [NAME_CHARACTERS]: ReducerCharacters,
 });
