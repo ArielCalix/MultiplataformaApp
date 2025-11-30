@@ -1,73 +1,345 @@
-# React + TypeScript + Vite
+# 📘 Guía de Proyecto: MultiplataformaApp  
+### *Explicación ampliada sobre el módulo WebMulti (React + TS + Redux + Reactstrap)*
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este documento profundiza específicamente en el módulo **WebMulti**, el núcleo funcional del proyecto.  
+Está escrito para estudiantes, con lenguaje claro y estructura formativa.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# 🧩 ¿Qué es WebMulti?
 
-## React Compiler
+**WebMulti** es el módulo donde realmente se desarrolla la aplicación web usando:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React** — para construir interfaces basadas en componentes  
+- **TypeScript** — para tipado estricto y reducción de errores  
+- **Redux** — para manejar el estado global entre componentes  
+- **Reactstrap** — para crear interfaces visuales con componentes de Bootstrap  
 
-## Expanding the ESLint configuration
+Es aquí donde se programa toda la lógica de la app, las pantallas, los componentes, los hooks, los servicios y la comunicación con APIs.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# 🧱 Arquitectura general de WebMulti
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+WebMulti/
+├── src/
+│   ├── main.tsx
+│   ├── App.tsx
+│   ├── components/
+│   ├── pages/
+│   ├── store/
+│   ├── services/
+│   ├── hooks/
+│   ├── utils/
+│   └── styles/
+└── ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+A continuación, veremos cada una de estas partes con propósitos académicos.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 🟦 1. `main.tsx` — Punto de entrada de la aplicación
+
+Este archivo:
+
+- Monta la app en el DOM (con `ReactDOM.createRoot`)  
+- Envuelve la aplicación con `<Provider>` de Redux  
+- Aplica configuraciones globales  
+- Carga estilos generales  
+
+Ejemplo simplificado:
+
+```tsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { Provider } from "react-redux";
+import { store } from "./store";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <Provider store={store}>
+      <App />
+  </Provider>
+);
 ```
+
+### ¿Por qué es importante?
+Porque permite que *cualquier componente* tenga acceso al estado global de Redux sin props innecesarias.
+
+---
+
+# 🟦 2. `App.tsx` — Componente raíz
+
+Aquí se definen:
+
+- La estructura principal de la app  
+- Las rutas  
+- El layout general (barra superior, menú lateral, footer, etc.)  
+
+Ejemplo conceptual:
+
+```tsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Inicio from "./pages/Inicio";
+import Configuracion from "./pages/Configuracion";
+
+const App = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Inicio />} />
+      <Route path="/config" element={<Configuracion />} />
+    </Routes>
+  </BrowserRouter>
+);
+
+export default App;
+```
+
+---
+
+# 🟩 3. Carpeta `components/` — Construyendo bloques reutilizables
+
+Aquí viven componentes independientes como:
+
+- Botones  
+- Tarjetas  
+- Formularios  
+- Modales  
+- Menús  
+- Loaders  
+
+**Buenas prácticas para estudiantes:**
+
+- Mantener componentes pequeños  
+- Cada componente debe tener una función clara  
+- Evitar repetir código: crear un componente reutilizable  
+
+Ejemplo:
+
+```tsx
+import { Button } from "reactstrap";
+
+export const BtnPrimario = ({ texto, onClick }) => (
+  <Button color="primary" onClick={onClick}>
+    {texto}
+  </Button>
+);
+```
+
+---
+
+# 🟧 4. Carpeta `pages/` — Las pantallas completas de la app
+
+Aquí se crean páginas como:
+
+- `Inicio`  
+- `Login`  
+- `Dashboard`  
+- `Configuracion`  
+- `Usuarios`  
+
+Cada página puede usar componentes, servicios, hooks, Redux, etc.
+
+Ejemplo educativo:
+
+```tsx
+const Inicio = () => {
+  return (
+    <div>
+      <h1>Bienvenido</h1>
+      <p>Esta es la página de inicio</p>
+    </div>
+  );
+};
+```
+
+---
+
+# 🟥 5. Carpeta `store/` — Arquitectura Redux
+
+Redux se utiliza para manejar:
+
+- Estado global  
+- Preferencias de usuario  
+- Sesiones  
+- Datos obtenidos desde APIs  
+
+Estructura típica:
+
+```
+store/
+├── index.ts
+├── slices/
+│   ├── usuarioSlice.ts
+│   └── configuracionSlice.ts
+└── hooks.ts
+```
+
+### ¿Qué es un slice?
+
+Un "slice" es una pieza del estado global.  
+Ejemplo sencillo:
+
+```ts
+import { createSlice } from "@reduxjs/toolkit";
+
+const usuarioSlice = createSlice({
+  name: "usuario",
+  initialState: {
+    nombre: "",
+    logueado: false,
+  },
+  reducers: {
+    login: (state, action) => {
+      state.nombre = action.payload;
+      state.logueado = true;
+    },
+    logout: (state) => {
+      state.nombre = "";
+      state.logueado = false;
+    }
+  }
+});
+
+export const { login, logout } = usuarioSlice.actions;
+export default usuarioSlice.reducer;
+```
+
+---
+
+# 🟨 6. Carpeta `services/` — Comunicación con APIs
+
+Esta capa se encarga de:
+
+- Peticiones HTTP  
+- Lógica de transformación de datos  
+- Conexión con backend  
+
+Ejemplo académico:
+
+```ts
+import axios from "axios";
+
+export const obtenerUsuarios = async () => {
+  const resp = await axios.get("https://api.example.com/usuarios");
+  return resp.data;
+};
+```
+
+---
+
+# 🟪 7. Carpeta `hooks/` — Lógica reutilizable
+
+Aquí viven hooks personalizados como:
+
+- `useAuth()`  
+- `useFetch()`  
+- `useForm()`  
+
+Ejemplo:
+
+```ts
+import { useState } from "react";
+
+export const useContador = () => {
+  const [valor, setValor] = useState(0);
+
+  return {
+    valor,
+    incrementar: () => setValor(valor + 1),
+    reset: () => setValor(0)
+  };
+};
+```
+
+---
+
+# 🟫 8. Carpeta `utils/` — Funciones auxiliares
+
+Ejemplo de utilidades:
+
+- Formatear fechas  
+- Validar correos  
+- Convertir texto  
+- Procesar respuestas API  
+
+Ejemplo:
+
+```ts
+export const formatearFecha = (fecha: string) => {
+  return new Date(fecha).toLocaleDateString("es-HN");
+};
+```
+
+---
+
+# 🟦 9. Carpeta `styles/` — Estilos globales o parciales
+
+Puede contener:
+
+- Variables globales  
+- Temas  
+- Estilos SCSS o CSS  
+- Archivos de Bootstrap si se personalizan  
+
+Reactstrap usa Bootstrap, así que aquí puedes sobrescribir estilos.
+
+---
+
+# 🎨 ¿Dónde entra Reactstrap?
+
+Reactstrap permite usar los componentes de Bootstrap dentro de React, por ejemplo:
+
+```tsx
+import { Card, CardBody, CardTitle } from "reactstrap";
+
+const TarjetaInfo = () => (
+  <Card>
+    <CardBody>
+      <CardTitle tag="h5">Información</CardTitle>
+    </CardBody>
+  </Card>
+);
+```
+
+Beneficios:
+
+- Componentes listos para producción  
+- Consistencia visual  
+- Compatibilidad con Bootstrap 4/5  
+
+---
+
+# 🔵 ¿Por qué usar React + Redux + TS?
+
+| Tecnología     | Beneficio académico                            |
+| -------------- | ---------------------------------------------- |
+| **React**      | Componentes, JSX, reactividad moderna          |
+| **TypeScript** | Evita errores, tipado estricto, mantenibilidad |
+| **Redux**      | Manejo profesional del estado global           |
+| **Reactstrap** | Interfaces limpias basadas en Bootstrap        |
+
+En conjunto, ofrecen un entorno de desarrollo completo, moderno y escalable.
+
+---
+
+# 🎓 Resumen para estudiantes
+
+WebMulti demuestra:
+
+- Arquitectura profesional  
+- Uso real de Redux  
+- Lógica separada por responsabilidades  
+- Componentización  
+- Buenas prácticas con TypeScript  
+- Integración visual con Reactstrap  
+
+Es un excelente proyecto base para aprender desarrollo front-end avanzado.
+
+---
+
+# 👨‍🏫 Autor
+
+Documento creado para fines educativos por **Ariel Calix**.
